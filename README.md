@@ -5,6 +5,7 @@ A comprehensive POS (Point of Sale) and inventory management system for clothing
 ## Features
 
 ### 🏪 **POS System (Internal)**
+
 - **Dashboard** - Real-time sales overview and analytics
 - **Inventory Management** - Products, variants (sizes, colors, styles), stock tracking
 - **Order Management** - Bulk sales, retail orders, order tracking
@@ -14,6 +15,7 @@ A comprehensive POS (Point of Sale) and inventory management system for clothing
 - **Low Stock Alerts** - Automatic notifications for reorder points
 
 ### 🌐 **Ecommerce Showcase (Public)**
+
 - **Product Catalog** - Simple product display without payment gateway
 - **Categories** - Organized product browsing
 - **Contact Forms** - Inquiry and bulk order requests
@@ -21,6 +23,7 @@ A comprehensive POS (Point of Sale) and inventory management system for clothing
 - **Responsive Design** - Mobile and tablet optimized
 
 ### 🔧 **Technical Features**
+
 - **Full-Stack** - Nuxt 3 with Nitro backend
 - **Database** - SQLite with Prisma ORM
 - **Authentication** - JWT-based user authentication
@@ -61,35 +64,42 @@ A comprehensive POS (Point of Sale) and inventory management system for clothing
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd klova-store-manager
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
+
    Update the `.env` file with your configuration.
 
 4. **Set up the database**
+
    ```bash
    npx prisma generate
    npx prisma migrate dev
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -102,6 +112,7 @@ A comprehensive POS (Point of Sale) and inventory management system for clothing
 ## Database Schema
 
 The system includes comprehensive models for:
+
 - **Users** - Staff authentication and role management
 - **Products** - Product catalog with variants (size, color, style)
 - **Categories** - Product categorization
@@ -114,28 +125,33 @@ The system includes comprehensive models for:
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
 - `POST /api/auth/logout` - User logout
 - `GET /api/auth/me` - Get current user
 
 ### Products
+
 - `GET /api/products` - List products
 - `POST /api/products` - Create product
 - `PUT /api/products/:id` - Update product
 - `DELETE /api/products/:id` - Delete product
 
 ### Orders
+
 - `GET /api/orders` - List orders
 - `POST /api/orders` - Create order
 - `PUT /api/orders/:id` - Update order
 - `GET /api/orders/:id` - Get order details
 
 ### Customers
+
 - `GET /api/customers` - List customers
 - `POST /api/customers` - Create customer
 - `PUT /api/customers/:id` - Update customer
 
 ### Reports
+
 - `GET /api/reports/sales` - Sales reports
 - `GET /api/reports/inventory` - Inventory reports
 - `GET /api/reports/dashboard` - Dashboard statistics
@@ -143,7 +159,9 @@ The system includes comprehensive models for:
 ## Business Logic
 
 ### Product Variants
+
 Products support multiple variants:
+
 - **Sizes**: S, M, L, XL, XXL, XXXL
 - **Colors**: Multiple color options
 - **Styles**: Different style variations
@@ -151,17 +169,20 @@ Products support multiple variants:
 - **Stock Tracking**: Per-variant inventory management
 
 ### Order Types
+
 - **RETAIL** - Individual customer orders
 - **BULK** - Large quantity orders for businesses
 - **WHOLESALE** - Special pricing for bulk buyers
 
 ### Stock Management
+
 - **Automatic Updates** - Stock adjusted on sales
 - **Low Stock Alerts** - Configurable minimum thresholds
 - **Stock Movements** - Full audit trail of inventory changes
 - **Adjustment Support** - Manual stock corrections
 
 ### Reporting
+
 - **Real-time Dashboard** - Live sales and inventory data
 - **Sales Reports** - Daily, weekly, monthly summaries
 - **Inventory Reports** - Stock levels, movement history
@@ -170,6 +191,7 @@ Products support multiple variants:
 ## WhatsApp Integration
 
 The system supports WhatsApp Business API integration for:
+
 - **Order Notifications** - Automatic order confirmations
 - **Stock Alerts** - Low inventory notifications
 - **Customer Communication** - Direct messaging for orders
@@ -187,6 +209,7 @@ The application is ready for AWS Amplify deployment:
 4. **Deploy** - Automatic deployment on Git push
 
 ### Build Commands
+
 ```bash
 npm run build    # Production build
 npm run preview  # Preview production build
@@ -203,6 +226,7 @@ npm run dev      # Development server
 4. **Authentication** - Use middleware for protected routes
 
 ### Code Style
+
 - **ESLint** - Code linting and formatting
 - **Vue 3 Composition API** - Modern Vue.js patterns
 - **Tailwind CSS** - Utility-first styling
@@ -223,6 +247,7 @@ This project is proprietary software for Klova Store.
 ## Support
 
 For support and questions:
+
 - Email: support@klovastore.com
 - WhatsApp: +94 123 456 789
 
