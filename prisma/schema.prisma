@@ -1,0 +1,244 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User Management
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      UserRole @default(CASHIER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders   Order[]
+  sales    Sale[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  CASHIER
+}
+
+// Product Management
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id           String      @id @default(cuid())
+  sku          String      @unique
+  name         String
+  description  String?
+  categoryId   String
+  basePrice    Float
+  costPrice    Float?
+  isActive     Boolean     @default(true)
+  images       String?     // JSON string of image URLs
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relations
+  category     Category    @relation(fields: [categoryId], references: [id])
+  variants     ProductVariant[]
+  orderItems   OrderItem[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  productId String
+  size      String?  // S, M, L, XL, XXL, XXXL
+  color     String?
+  style     String?
+  sku       String   @unique
+  price     Float?   // Override base price if different
+  stock     Int      @default(0)
+  minStock  Int      @default(5) // Low stock alert threshold
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@map("product_variants")
+}
+
+// Customer Management
+model Customer {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String?  @unique
+  phone       String?  @unique
+  address     String?
+  city        String?
+  isActive    Boolean  @default(true)
+  totalOrders Int      @default(0)
+  totalSpent  Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  orders Order[]
+
+  @@map("customers")
+}
+
+// Order Management
+model Order {
+  id               String      @id @default(cuid())
+  orderNumber      String      @unique
+  customerId       String?
+  userId           String      // Staff who created the order
+  status           OrderStatus @default(PENDING)
+  orderType        OrderType   @default(RETAIL)
+  subtotal         Float
+  discount         Float       @default(0)
+  discountType     DiscountType @default(PERCENTAGE)
+  tax              Float       @default(0)
+  total            Float
+  notes            String?
+  whatsappSent     Boolean     @default(false)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  // Relations
+  customer   Customer?   @relation(fields: [customerId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+  items      OrderItem[]
+  sales      Sale[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  READY
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderType {
+  RETAIL
+  BULK
+  WHOLESALE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  productId        String
+  productVariantId String?
+  quantity         Int
+  unitPrice        Float
+  totalPrice       Float
+  createdAt        DateTime        @default(now())
+
+  // Relations
+  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product         @relation(fields: [productId], references: [id])
+  productVariant  ProductVariant? @relation(fields: [productVariantId], references: [id])
+
+  @@map("order_items")
+}
+
+// Sales & Transactions
+model Sale {
+  id            String      @id @default(cuid())
+  orderId       String      @unique
+  userId        String
+  paymentMethod PaymentMethod @default(CASH)
+  amount        Float
+  receivedAmount Float?
+  changeAmount  Float?
+  status        SaleStatus  @default(COMPLETED)
+  saleDate      DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@map("sales")
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  BANK_TRANSFER
+  MOBILE_PAYMENT
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+}
+
+// Inventory Tracking
+model StockMovement {
+  id               String           @id @default(cuid())
+  productVariantId String
+  type             StockMovementType
+  quantity         Int
+  previousStock    Int
+  newStock         Int
+  reason           String?
+  reference        String?          // Order ID, adjustment ID, etc.
+  createdAt        DateTime         @default(now())
+
+  @@map("stock_movements")
+}
+
+enum StockMovementType {
+  IN        // Stock received
+  OUT       // Stock sold
+  ADJUSTMENT // Manual adjustment
+  RETURN    // Return to stock
+}
+
+// System Settings
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  type  String @default("string") // string, number, boolean, json
+
+  @@map("settings")
+}
